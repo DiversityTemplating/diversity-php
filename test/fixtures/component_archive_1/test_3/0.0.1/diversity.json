@@ -1,0 +1,9 @@
+{
+  "name":     "test_3",
+  "version":  "0.0.1",
+  "type":     "object",
+  "style":    "main.css",
+  "dependencies": {
+    "test_1": "^0.1.0"
+  }
+}

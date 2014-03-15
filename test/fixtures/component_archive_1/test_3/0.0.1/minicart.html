@@ -1,0 +1,62 @@
+{{=[[ ]]=}}
+<div ng-cloak class="tws-minicart" ng-switch="cartType" 
+     ng-controller="twsMiniCartCtrl" ng-class="{working: working,'tws-cart-change-odd': (cart.items % 2) === 0 }">
+
+
+
+  <div class="tws-minicart-small" ng-switch-when="small">
+    <span class="tws-minicart-title">
+      <span ng-if="cart.items.length === 0">{{ pgettext("cart","Shopping cart is empty") }}</span>
+      <span ng-if="cart.items.length === 0">{{ pgettext("cart","Shopping cart") }}</span>      
+    </span>
+
+    <span class="tws-minicart-title-count">
+     
+      {{ npgettext("cart|article","1 article"," %1s articles",cart.items.length) | sprintf: cart.items.length }}
+      (Summa {{ sum() }} SEK)
+
+    </span>
+
+    <span class="tws-button">Ändra</span>
+    <span class="tws-button">Till Kassan</span>
+  </div>
+  
+
+  <div class="tws-minicart-medium" ng-switch-when="medium" >
+    <strong>
+      <i class="fa fa-shopping-cart"></i>
+      <span ng-if="cart.items.length === 0">{{ pgettext("cart","Shopping cart is empty") }}</span>
+      <span ng-if="cart.items.length > 0">{{ npgettext("cart","Shopping cart","Shopping cart",cart.items.length) | sprintf: cart.items.length }}</span>
+    </strong>
+
+    <!-- //article smarticles -->
+    <span ng-bind="npgettext('cart|article','1 article',' %1s articles',cart.items.length) | sprintf: cart.items.length">X artiklar</span>
+
+
+    <table ng-if="cart.items.length > 0">
+      <thead>
+        <tr>
+          <th>Artikel</th><th>Antal</th><th>Pris</th><td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in cart.items" ng-class="{odd: $odd, even: $even}">
+          <td>{{item.article.name.sv}}</td>
+          <td>{{item.choices.quantity}}</td>
+          <td>
+            <!-- See http://redmine.textalk.com/issues/11294, this code assumes this fixed -->
+            {{item.costs.total.incVat || item.costs.total.exVat}}
+          </td>
+          <td class="action" ng-click="cart.remove(item.uid)">
+            <i class="fa fa-trash-o"></i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <span class="sum" ng-if="cart.items.length > 0">Summa {{sum()}} SEK</span>
+  </div>
+
+
+
+
+</div>

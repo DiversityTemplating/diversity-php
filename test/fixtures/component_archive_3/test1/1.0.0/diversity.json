@@ -1,0 +1,12 @@
+{
+  "name":     "test1",
+  "version":  "1.0.0",
+  "script":   "test.js",
+  "style":    "test.css",
+  "template": "test.html",
+  "context":   {
+    "value": {
+      "type": "prerequisite"
+    }
+  }
+}

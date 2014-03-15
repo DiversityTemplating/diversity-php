@@ -1,0 +1,22 @@
+{
+  "name": "textalk/diversity-php",
+  "description": "Motor for generic HTML components",
+  "require": {
+    "mustache/mustache": "~2.1",
+    "vierbergenlars/php-semver": "3.0.0-rc2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*",
+    "satooshi/php-coveralls": "dev-master"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Fredrik Liljegren",
+      "email": "fredrik.liljegren@textalk.se"
+    }
+  ],
+  "autoload": {
+    "psr-4": {"Diversity\\": "lib/"}
+  }
+}
