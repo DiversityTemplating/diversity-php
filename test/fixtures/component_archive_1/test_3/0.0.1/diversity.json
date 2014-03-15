@@ -3,6 +3,7 @@
   "version":  "0.0.1",
   "type":     "object",
   "style":    "main.css",
+  "options":  "options.json",
   "dependencies": {
     "test_1": "^0.1.0"
   }

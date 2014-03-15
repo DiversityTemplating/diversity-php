@@ -29,9 +29,10 @@ class Component {
 
     foreach ($this->spec->dependencies as $name => $spec) {
       /// @todo Accept any URI
-      if (strpos($spec, 'http') === 0) {
-      }
-      else {
+      //if (strpos($spec, 'http') === 0) {
+      //}
+      //else
+      {
         // Assume $spec is a version.
         $component = $this->factory->get("$name:$spec");
         $dependencies[$name] = $component;

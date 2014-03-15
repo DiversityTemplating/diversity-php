@@ -37,6 +37,27 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
     );
   }
 
+  public function testRenderExternalScriptTags() {
+    $test2 = self::$factory->get('test2');
+    $collection = new Collection;
+
+    $collection->add($test2);
+
+    $scripts_html = $collection->renderScriptTags();
+    $scripts = new DOMDocument;
+    $scripts->loadXML($scripts_html);
+
+    $this->assertTag(
+      array(
+        'tag' => 'script',
+        'attributes' => array(
+          'src' => 'http://external.site/my.js'
+        )
+      ),
+      $scripts, $scripts_html
+    );
+  }
+
   public function testRenderStyleTags() {
     $test1 = self::$factory->get('test1');
     $collection = new Collection;

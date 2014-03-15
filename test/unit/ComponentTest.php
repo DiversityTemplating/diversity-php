@@ -95,8 +95,20 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     $component->render();
   }
 
-  public function testGetOptionsSchema() {
+  public function testGetOptionsSchemaFromInline() {
+    $component = self::$factory->get('test_1:0.1.0');
+    $schema = $component->getOptionsSchema();
 
+    $this->assertEquals("Simple option", $schema->title);
+    $this->assertEquals("string", $schema->type);
+  }
+
+  public function testGetOptionsSchemaFromFile() {
+    $component = self::$factory->get('test_3');
+    $schema = $component->getOptionsSchema();
+
+    $this->assertEquals("object", $schema->type);
+    $this->assertEquals("Your name", $schema->properties->name->title);
   }
 
   /// @todo Test features:

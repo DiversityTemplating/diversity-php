@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "title": "Your name",
+      "type": "string"
+    },
+    "age": {
+      "title": "Your age",
+      "type": "integer"
+    }
+  }
+}
