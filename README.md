@@ -2,6 +2,7 @@ Diversity engine in PHP
 =======================
 
 [![Build Status](https://travis-ci.org/DiversityTemplating/diversity-php.png?branch=master)](https://travis-ci.org/DiversityTemplating/diversity-php)
+[![Coverage Status](https://coveralls.io/repos/DiversityTemplating/diversity-php/badge.png)](https://coveralls.io/r/DiversityTemplating/diversity-php)
 
 A PHP engine for Diversity components, by [Textalk](http://www.textalk.com/).
 
