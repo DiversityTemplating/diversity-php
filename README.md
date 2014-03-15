@@ -10,5 +10,6 @@ specified by mustache templates, supporting dependencies, backend
 fetching of data over JSON-RPC, supporting AngularJS templating on the
 frontend (by doing collected manual bootstrapping).
 
-This component system is constructed for use with Textalk Webshop, but
-is in no way limited to that use.
+This component system is constructed for use with [Textalk
+Webshop](http://www.textalk.com/webshop), but is in no way limited to
+that use.
