@@ -2,11 +2,15 @@
   "name":     "test_5",
   "version":  "1.0.0",
   "template": "test.html",
+  "angular":  "testmodule.test5",
   "context": {
     "some_data": {
       "type":        "prerequisite",
       "description": "Feed prerequisites into components",
       "json":        true
     }
+  },
+  "dependencies": {
+    "test_1": ""
   }
 }

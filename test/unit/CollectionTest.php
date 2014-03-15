@@ -80,4 +80,43 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
       $styles, $styles_html
     );
   }
+
+  public function testNeedsAngular() {
+    $factory = new Factory(
+      array('archive' => FIXTURES . 'component_archive_1' . DS, 'archive_url' => 'dummy')
+    );
+
+    $collection = new Collection;
+
+    // An empty collection won't need angular.
+    $this->assertFalse($collection->needsAngular());
+
+    // Component test_1 has it's own andular module.
+    $test_1 = $factory->get('test_1');
+    $collection->add($test_1);
+    $this->assertTrue($collection->needsAngular());
+
+    $collection2 = new Collection;
+
+    // Component test_3 depends on test_1 that needs angular.
+    $test_3 = $factory->get('test_3');
+    $collection->add($test_3);
+    $this->assertTrue($collection->needsAngular());
+  }
+
+  public function testAngularBootstrap() {
+    $factory = new Factory(
+      array('archive' => FIXTURES . 'component_archive_1' . DS, 'archive_url' => 'dummy')
+    );
+    $collection = new Collection;
+
+    $test_5 = $factory->get('test_5');
+    $collection->add($test_5);
+
+    // test_5 depends on test_1, so test_1 should be bootstrapped first.
+    $this->assertEquals(
+      'angular.bootstrap(document, ["testmodule.test1","testmodule.test5"]);' . "\n",
+      $collection->renderAngularBootstrap()
+    );
+  }
 }

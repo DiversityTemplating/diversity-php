@@ -1,6 +1,7 @@
 {
   "name": "test_1",
   "version": "0.1.0",
+  "angular": "testmodule.test1",
   "options": {
     "title": "Simple option",
     "type": "string"

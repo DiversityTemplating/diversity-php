@@ -63,8 +63,8 @@ class Collection {
     $all_components = array();
 
     foreach ($this->components as $component) {
-      $all_components[$component->name] = $component;
       $all_components = array_merge($all_components, $component->getDependencies());
+      $all_components[$component->name] = $component;
     }
 
     return $all_components;
@@ -81,7 +81,7 @@ class Collection {
    * @return string JavaScript with the angular bootstrap call.
    */
   public function renderAngularBootstrap() {
-    return 'angular.bootstrap(document, ' . json_encode($this->getAngularModules()) . ")\n";
+    return 'angular.bootstrap(document, ' . json_encode($this->getAngularModules()) . ");\n";
   }
 
   /**
