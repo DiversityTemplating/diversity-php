@@ -95,6 +95,19 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     $component->render();
   }
 
+  public function testRenderWithPrerequisite() {
+    $component = self::$factory->get('test_5');
+
+    $rendered = $component->render(
+      array(
+        'prerequisites' => array('some_data' => array('title' => 'Some Data'))
+      )
+    );
+
+    $this->assertEquals(
+      'Here we can display Some Data.  JSON: {"title":"Some Data"}.', $rendered);
+  }
+
   public function testGetOptionsSchemaFromInline() {
     $component = self::$factory->get('test_1:0.1.0');
     $schema = $component->getOptionsSchema();

@@ -1,0 +1,12 @@
+{
+  "name":     "test_5",
+  "version":  "1.0.0",
+  "template": "test.html",
+  "context": {
+    "some_data": {
+      "type":        "prerequisite",
+      "description": "Feed prerequisites into components",
+      "json":        true
+    }
+  }
+}

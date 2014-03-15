@@ -139,19 +139,19 @@ class Component {
       return $mustache->render(str_replace('{{lang}}', $language, $text));
     };
 
-    // Handle gettext
-    if (isset($this->spec->i18n->$language->backend)) {
-      $po_dir = $this->getAssetUrl() .
-        substr($this->spec->i18n->$language->backend, 0, -strlen($language . '.po'));
-      $gettext_domain = 'apa';//$this->name . ':' . $this->version;
-      bindtextdomain($gettext_domain, $this->location . 'locale');
-      //trigger_error("Set $gettext_domain to " . $this->location . 'locale');
-
-      $template_data->gettext = function($text, $mustache) use ($gettext_domain) {
-        //trigger_error("domain: '$gettext_domain': " . dgettext($gettext_domain, trim($text)));
-        return $mustache->render(dgettext($gettext_domain, trim($text)));
-      };
-    }
+    /// @todo Handle gettext
+    //if (isset($this->spec->i18n->$language->backend)) {
+    //  $po_dir = $this->getAssetUrl() .
+    //    substr($this->spec->i18n->$language->backend, 0, -strlen($language . '.po'));
+    //  $gettext_domain = 'apa';//$this->name . ':' . $this->version;
+    //  bindtextdomain($gettext_domain, $this->location . 'locale');
+    //  //trigger_error("Set $gettext_domain to " . $this->location . 'locale');
+    //
+    //  $template_data->gettext = function($text, $mustache) use ($gettext_domain) {
+    //    //trigger_error("domain: '$gettext_domain': " . dgettext($gettext_domain, trim($text)));
+    //    return $mustache->render(dgettext($gettext_domain, trim($text)));
+    //  };
+    //}
 
     /// @todo Handle dynamic context.
 
