@@ -8,8 +8,6 @@ use vierbergenlars\SemVer\SemVerException;
 
 /**
  * Representing one actual component (in one specific version).
- *
- * For something to be rendered, you will need TemplateComponent.
  */
 class Component {
 
@@ -103,11 +101,6 @@ class Component {
 
   public function getTemplate() {
     if (!isset($this->spec->template)) return false;
-
-    if (strpos($this->spec->template, 'http') === 0) {
-      return curl_get_file($this->spec->template);
-    }
-
     return file_get_contents($this->location . $this->spec->template);
   }
 
@@ -117,7 +110,7 @@ class Component {
     /// @todo Strip out all defaults from option schema, merge with chosen options.
     $mustache      = new \Mustache_Engine;
     $options       = isset($params['options'      ]) ? $params['options']       : array();
-    $prerequisites = isset($params['prerequisites']) ? $params['prerequisites'] : new \stdClass;
+    $prerequisites = isset($params['prerequisites']) ? $params['prerequisites'] : array();
     $theme_index   = isset($params['theme'        ]) ? intval($params['theme']) : 0;
     $language      = isset($params['language'     ]) ? $params['language']      : 'en';
 
@@ -133,6 +126,14 @@ class Component {
     );
 
     /// @todo Handle fields
+    if (isset($this->spec->fields)) {
+      $template_data->fields = new \stdClass;
+
+      foreach ($this->spec->fields as $field => $field_spec) {
+        $template_data->fields->$field = isset($params['fields'][$field]) ?
+          $params['fields'][$field] : array();
+      }
+    }
 
     // Handle lang to be able to use e.g. {{#lang}}{{name.{{lang}}}}{{/lang}}
     $template_data->lang = function($text, $mustache) use ($language) {

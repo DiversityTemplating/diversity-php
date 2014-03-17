@@ -38,7 +38,9 @@ class Factory {
 
     if (!isset($component_data['spec'])) {
       /// @todo More verbose error message?  More specific exception type.
-      throw new NotFoundException('Couldn\'t find component: ' . $spec);
+      throw new NotFoundException(
+        'Couldn\'t find component: ' . $spec . " in {$this->settings['archive']}"
+      );
     }
 
     $component = new Component($this, $component_data);
