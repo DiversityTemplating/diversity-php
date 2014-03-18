@@ -1,0 +1,8 @@
+{
+  "name":     "test_6",
+  "version":  "1.0.0",
+  "template": "test.html",
+  "context":  {
+    "localized": { "type": "prerequisite" }
+  }
+}

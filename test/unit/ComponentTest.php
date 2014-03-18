@@ -124,6 +124,30 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("Your name", $schema->properties->name->title);
   }
 
+  public function testRenderLanguagePart() {
+    $component = self::$factory->get('test_6');
+
+    $prerequisites = array('localized' => array('sv' => 'svensk sträng', 'en' => 'english string'));
+
+    $rendered_en = $component->render(
+      array(
+        'language'      => 'en',
+        'prerequisites' => $prerequisites,
+      )
+    );
+
+    $this->assertEquals('String: "english string"', $rendered_en);
+
+    $rendered_sv = $component->render(
+      array(
+        'language'      => 'sv',
+        'prerequisites' => $prerequisites,
+      )
+    );
+
+    $this->assertEquals('String: "svensk sträng"', $rendered_sv);
+  }
+
   /// @todo Test features:
 
   // When there are several matching versions, you should get the highest.
