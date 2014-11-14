@@ -64,7 +64,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
 
     $collection->add($test1);
 
-    $styles_html = $collection->renderStyleTags();
+    $styles_html = '<head>' . $collection->renderStyleTags() . '</head>';
     $styles = new DOMDocument;
     $styles->loadXML($styles_html);
 
@@ -75,6 +75,51 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
           'rel'  => 'stylesheet',
           'type' => 'text/css',
           'href' => 'http://foo.bar/test1/1.0.0/test.css'
+        )
+      ),
+      $styles, $styles_html
+    );
+  }
+
+  public function testRenderMultipleStyleTags() {
+    $test3 = self::$factory->get('test3');
+    $collection = new Collection;
+
+    $collection->add($test3);
+
+    $styles_html = '<head>' . $collection->renderStyleTags() . '</head>';
+    $styles = new DOMDocument;
+    $styles->loadXML($styles_html);
+
+    $this->assertTag(
+      array(
+        'tag' => 'link',
+        'attributes' => array(
+          'rel'  => 'stylesheet',
+          'type' => 'text/css',
+          'href' => 'http://foo.bar/test3/2.3.4/foo.css'
+        )
+      ),
+      $styles, $styles_html
+    );
+    $this->assertTag(
+      array(
+        'tag' => 'link',
+        'attributes' => array(
+          'rel'  => 'stylesheet',
+          'type' => 'text/css',
+          'href' => 'http://foo.bar/test3/2.3.4/bar.css'
+        )
+      ),
+      $styles, $styles_html
+    );
+    $this->assertTag(
+      array(
+        'tag' => 'link',
+        'attributes' => array(
+          'rel'  => 'stylesheet',
+          'type' => 'text/css',
+          'href' => '//cdn.js/baz.css'
         )
       ),
       $styles, $styles_html

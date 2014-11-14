@@ -62,7 +62,7 @@ class Component {
     if (!isset($this->spec->script)) return $scripts;
 
     foreach ((array)$this->spec->script as $script) {
-      if (strpos($script, 'http') === 0) {
+      if (strpos($script, '//') !== false) {
         $scripts[] = $script;
         continue;
       }
@@ -88,15 +88,20 @@ class Component {
    */
   public function getStyles() {
     $asset_url  = $this->getAssetUrl();
-    $style_urls = array();
+    $styles = array();
 
-    if (isset($this->spec->style)) {
-      $style_urls[] = $asset_url . $this->spec->style;
+    if (!isset($this->spec->style)) return $styles;
+
+    foreach ((array)$this->spec->style as $style) {
+      if (strpos($style, '//') !== false) {
+        $styles[] = $style;
+        continue;
+      }
+
+      $styles[] = $asset_url . $style;
     }
 
-    /// @todo Add theme.  ...which one?
-
-    return $style_urls;
+    return $styles;
   }
 
   public function getTemplate() {
@@ -124,16 +129,6 @@ class Component {
       array('name' => array('sv' => 'apa', 'en' => 'foo')),
       array('name' => array('sv' => 'bepa', 'en' => 'bar')),
     );
-
-    /// @todo Handle fields
-    if (isset($this->spec->fields)) {
-      $template_data->fields = new \stdClass;
-
-      foreach ($this->spec->fields as $field => $field_spec) {
-        $template_data->fields->$field = isset($params['fields'][$field]) ?
-          $params['fields'][$field] : array();
-      }
-    }
 
     // Handle lang to be able to use e.g. {{#lang}}{{name.{{lang}}}}{{/lang}}
     $template_data->lang = function($text, $mustache) use ($language) {

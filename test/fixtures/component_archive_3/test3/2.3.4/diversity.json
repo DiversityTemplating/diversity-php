@@ -1,0 +1,5 @@
+{
+  "name":     "test3",
+  "version":  "2.3.4",
+  "style":    ["foo.css", "bar.css", "//cdn.js/baz.css"]
+}

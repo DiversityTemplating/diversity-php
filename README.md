@@ -14,3 +14,21 @@ frontend (by doing collected manual bootstrapping).
 This component system is constructed for use with [Textalk
 Webshop](http://www.textalk.com/webshop), but is in no way limited to
 that use.
+
+
+Developer install
+-----------------
+
+Development depends on php, php-curl and php-xdebug.
+
+```bash
+# Will get composer, install dependencies and run tests
+make test
+```
+
+Changelog
+---------
+
+0.2.0
+
+ * Handling arrays of styles.
