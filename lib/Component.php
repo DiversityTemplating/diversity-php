@@ -17,6 +17,7 @@ class Component {
     $this->name     = $this->spec->name;
     $this->version  = $this->spec->version;
     $this->location = $component_data['location'];
+    $this->subpath  = $component_data['subpath'];
     $this->type     = isset($this->spec->type) ? $this->spec->type : 'backend';
   }
 
@@ -51,8 +52,7 @@ class Component {
   public function getAssetUrl() {
     if (strpos($this->location, 'http') === 0) return $this->location;
 
-    return $this->factory->getArchiveUrl()
-      . $this->spec->name . '/' . $this->spec->version . '/';
+    return $this->factory->getArchiveUrl() . $this->subpath;
   }
 
   public function getScripts() {
@@ -123,7 +123,7 @@ class Component {
     $template_data->language     = $language;
     $template_data->options      = $options;
     $template_data->options_json = json_encode($options);
-    $template_data->assetUrl     = $this->getAssetUrl();
+    $template_data->baseUrl      = $this->getAssetUrl();
 
     $template_data->testlist = array(
       array('name' => array('sv' => 'apa', 'en' => 'foo')),

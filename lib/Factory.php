@@ -105,8 +105,8 @@ class Factory {
       return false;
     }
 
-    $component_data['location'] = $this->settings['archive'] . $component_data['name'] . '/';
-    $version_dirs = scandir($component_data['location']);
+    $component_data['subpath'] = $component_data['name'] . '/';
+    $version_dirs = scandir($this->settings['archive'] . $component_data['subpath']);
 
     $version_spec = new expression(
       isset($component_data['version_spec']) ? $component_data['version_spec'] : ''
@@ -120,13 +120,14 @@ class Factory {
         if (!$version_spec->satisfiedBy(new version($version_dir))) continue;
 
         $version = $version_dir;
-        $component_data['location'] .= $version_dir . '/';
+        $component_data['subpath'] .= $version_dir . '/';
         break;
       }
       catch (\RuntimeException $e) { continue; } // Obviously not a match…
     }
 
     // Get diversity.json.
+    $component_data['location'] = $this->settings['archive'] . $component_data['subpath'];
     $spec_file = $component_data['location'] . $this->settings['spec_filename'];
     if (file_exists($spec_file)) {
       $spec_json = file_get_contents($spec_file);
