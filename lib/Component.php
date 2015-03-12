@@ -17,13 +17,8 @@ class Component {
     $this->name     = $this->spec->name;
     $this->version  = $this->spec->version;
     $this->location = $component_data['location'];
-    $this->subpath  = $component_data['subpath'];
-    $this->type     = isset($this->spec->type) ? $this->spec->type : 'backend';
 
-    if (strpos($this->location, 'http') === 0) {
-      $this->base_url = $this->location;
-    }
-    elseif (array_key_exists('base_url', $component_data)) {
+    if (array_key_exists('base_url', $component_data)) {
       $this->base_url = $component_data['base_url'];
     }
   }

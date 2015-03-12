@@ -27,7 +27,6 @@ class FactoryTest extends PHPUnit_Framework_TestCase {
     $component = self::$factory->get('test_1:0.1.0');
     $this->assertInstanceOf('Diversity\Component', $component);
     $this->assertEquals('0.1.0', $component->spec->version);
-    $this->assertEquals('backend', $component->type);
   }
 
   /**
