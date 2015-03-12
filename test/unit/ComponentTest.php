@@ -15,51 +15,11 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     );
   }
 
-  public function testGetByName() {
-    $component = self::$factory->get('test_1:0.1.0');
-    $this->assertInstanceOf('Diversity\Component', $component);
-    $this->assertEquals('0.1.0', $component->spec->version);
-    $this->assertEquals('backend', $component->type);
-  }
-
-  /**
-   * @expectedException Diversity\NotFoundException
-   */
-  public function testGetByBadName() {
-    $component = self::$factory->get('test_1:1.2.3');
-  }
-
-  /**
-   * @expectedException Diversity\NotFoundException
-   */
-  public function testGetComponentWithEmptyJson() {
-    $component = self::$factory->get('test_2');
-  }
-
-  /**
-   * @expectedException Diversity\NotFoundException
-   */
-  public function testGetComponentWithBaddirAndNoJson() {
-    $component = self::$factory->get('test_4:1.0.0');
-  }
-
-  public function testGetByNameVersionGreaterThan() {
-    $component = self::$factory->get('test_1:>=0.1.0');
-    $this->assertEquals('0.1.0', $component->spec->version);
-  }
-
   public function testDependencies() {
     $component = self::$factory->get('test_3');
     $dependencies = $component->getDependencies();
 
     $this->assertEquals('test_1', $dependencies['test_1']->name);
-  }
-
-  public function testGetAllByType() {
-    $components = self::$factory->getAllByType('object');
-
-    $this->assertEquals('test_3', $components['test_3']->name);
-    $this->assertCount(1, $components);
   }
 
   public function testGetStyles() {
@@ -73,7 +33,7 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @expectedException Diversity\ConfigurationException
-   * @expectedExceptionMessage Can't get URL without archive_url in factory.
+   * @expectedExceptionMessage Can't get URL without base_url.
    */
   public function testGetStylesException() {
     $factory = new Factory(array('archive' => FIXTURES . 'component_archive_1' . DS));

@@ -23,18 +23,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
     $collection->add($test1);
 
     $scripts_html = $collection->renderScriptTags();
-    $scripts = new DOMDocument;
-    $scripts->loadXML($scripts_html);
-
-    $this->assertTag(
-      array(
-        'tag' => 'script',
-        'attributes' => array(
-          'src' => 'http://foo.bar/test1/1.0.0/test.js'
-        )
-      ),
-      $scripts, $scripts_html
-    );
+    $this->assertRegExp('$http://foo.bar/test1/1.0.0/test.js$', $scripts_html);
   }
 
   public function testRenderExternalScriptTags() {
@@ -44,18 +33,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
     $collection->add($test2);
 
     $scripts_html = $collection->renderScriptTags();
-    $scripts = new DOMDocument;
-    $scripts->loadXML($scripts_html);
-
-    $this->assertTag(
-      array(
-        'tag' => 'script',
-        'attributes' => array(
-          'src' => 'http://external.site/my.js'
-        )
-      ),
-      $scripts, $scripts_html
-    );
+    $this->assertRegExp('$http://external.site/my.js$', $scripts_html);
   }
 
   public function testRenderStyleTags() {
@@ -65,20 +43,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
     $collection->add($test1);
 
     $styles_html = '<head>' . $collection->renderStyleTags() . '</head>';
-    $styles = new DOMDocument;
-    $styles->loadXML($styles_html);
-
-    $this->assertTag(
-      array(
-        'tag' => 'link',
-        'attributes' => array(
-          'rel'  => 'stylesheet',
-          'type' => 'text/css',
-          'href' => 'http://foo.bar/test1/1.0.0/test.css'
-        )
-      ),
-      $styles, $styles_html
-    );
+    $this->assertContains('http://foo.bar/test1/1.0.0/test.css', $styles_html);
   }
 
   public function testRenderMultipleStyleTags() {
@@ -88,42 +53,9 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
     $collection->add($test3);
 
     $styles_html = '<head>' . $collection->renderStyleTags() . '</head>';
-    $styles = new DOMDocument;
-    $styles->loadXML($styles_html);
-
-    $this->assertTag(
-      array(
-        'tag' => 'link',
-        'attributes' => array(
-          'rel'  => 'stylesheet',
-          'type' => 'text/css',
-          'href' => 'http://foo.bar/test3/2.3.4/foo.css'
-        )
-      ),
-      $styles, $styles_html
-    );
-    $this->assertTag(
-      array(
-        'tag' => 'link',
-        'attributes' => array(
-          'rel'  => 'stylesheet',
-          'type' => 'text/css',
-          'href' => 'http://foo.bar/test3/2.3.4/bar.css'
-        )
-      ),
-      $styles, $styles_html
-    );
-    $this->assertTag(
-      array(
-        'tag' => 'link',
-        'attributes' => array(
-          'rel'  => 'stylesheet',
-          'type' => 'text/css',
-          'href' => '//cdn.js/baz.css'
-        )
-      ),
-      $styles, $styles_html
-    );
+    $this->assertContains('http://foo.bar/test3/2.3.4/foo.css', $styles_html);
+    $this->assertContains('http://foo.bar/test3/2.3.4/bar.css', $styles_html);
+    $this->assertContains('//cdn.js/baz.css', $styles_html);
   }
 
   public function testNeedsAngular() {

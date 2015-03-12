@@ -19,6 +19,13 @@ class Component {
     $this->location = $component_data['location'];
     $this->subpath  = $component_data['subpath'];
     $this->type     = isset($this->spec->type) ? $this->spec->type : 'backend';
+
+    if (strpos($this->location, 'http') === 0) {
+      $this->base_url = $this->location;
+    }
+    elseif (array_key_exists('base_url', $component_data)) {
+      $this->base_url = $component_data['base_url'];
+    }
   }
 
   public function getDependencies() {
@@ -44,19 +51,11 @@ class Component {
     return $dependencies;
   }
 
-  /**
-   * @return string|boolean The base-url for publically accessible assets, or false.
-   *
-   * @todo Add false for proprietary components.
-   */
-  public function getAssetUrl() {
-    if (strpos($this->location, 'http') === 0) return $this->location;
-
-    return $this->factory->getArchiveUrl() . $this->subpath;
-  }
-
   public function getScripts() {
-    $asset_url = $this->getAssetUrl();
+    if (!isset($this->base_url)) {
+      throw new ConfigurationException("Can't get URL without base_url.");
+    }
+
     $scripts   = array();
 
     if (!isset($this->spec->script)) return $scripts;
@@ -67,7 +66,7 @@ class Component {
         continue;
       }
 
-      $scripts[] = $asset_url . $script;
+      $scripts[] = $this->base_url . $script;
     }
 
     return $scripts;
@@ -87,7 +86,10 @@ class Component {
    * @exception Diversity\ConfigurationException if run with no archive_url
    */
   public function getStyles() {
-    $asset_url  = $this->getAssetUrl();
+    if (!isset($this->base_url)) {
+      throw new ConfigurationException("Can't get URL without base_url.");
+    }
+
     $styles = array();
 
     if (!isset($this->spec->style)) return $styles;
@@ -98,7 +100,7 @@ class Component {
         continue;
       }
 
-      $styles[] = $asset_url . $style;
+      $styles[] = $this->base_url . $style;
     }
 
     return $styles;
@@ -123,7 +125,8 @@ class Component {
     $template_data->language     = $language;
     $template_data->options      = $options;
     $template_data->options_json = json_encode($options);
-    $template_data->baseUrl      = $this->getAssetUrl();
+
+    if (!isset($this->base_url)) $template_data->baseUrl = $this->base_url;
 
     $template_data->testlist = array(
       array('name' => array('sv' => 'apa', 'en' => 'foo')),
