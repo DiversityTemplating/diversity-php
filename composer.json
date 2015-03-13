@@ -1,27 +1,10 @@
 {
   "name": "textalk/diversity-php",
   "description": "Engine for generic HTML components",
-  "repositories": [
-    {
-      "type": "package",
-      "package": {
-        "name": "textalk/php-sai",
-        "version": "1.0.0",
-        "source": {
-          "url":  "git@github.com:Textalk/php-SAI.git",
-          "type": "git",
-          "reference": "5e88b92391a712becc4d0cd2ddc276c2ad60068f"
-        },
-        "autoload": {
-          "classmap": ["lib/"]
-        }
-      }
-    }
-  ],
   "require": {
     "mustache/mustache": "~2.1",
     "vierbergenlars/php-semver": "3.0.0-rc2",
-    "textalk/php-sai": "1.0.0"
+    "textalk/php-sai": "0.1.3"
   },
   "require-dev": {
     "phpunit/phpunit": "*",

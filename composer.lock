@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ec2dffb3139cc4da9c1339925c0d6dee",
+    "hash": "1f4c50907b1835144771f2803cd6271f",
     "packages": [
         {
             "name": "mustache/mustache",
@@ -53,18 +53,26 @@
         },
         {
             "name": "textalk/php-sai",
-            "version": "1.0.0",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
-                "url": "git@github.com:Textalk/php-SAI.git",
-                "reference": "5e88b92391a712becc4d0cd2ddc276c2ad60068f"
+                "url": "https://github.com/Textalk/php-SAI.git",
+                "reference": "1a4c5cf398d94a5cb21f31fba35e7307774a95c4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Textalk/php-SAI/zipball/1a4c5cf398d94a5cb21f31fba35e7307774a95c4",
+                "reference": "1a4c5cf398d94a5cb21f31fba35e7307774a95c4",
+                "shasum": ""
             },
             "type": "library",
             "autoload": {
                 "classmap": [
                     "lib/"
                 ]
-            }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2015-03-13 15:03:18"
         },
         {
             "name": "vierbergenlars/php-semver",
