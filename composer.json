@@ -5,7 +5,7 @@
     {
       "type": "package",
       "package": {
-        "name": "Textalk/php-SAI",
+        "name": "textalk/php-sai",
         "version": "1.0",
         "source": {
           "url":  "git@github.com:Textalk/php-SAI.git",
@@ -18,7 +18,7 @@
   "require": {
     "mustache/mustache": "~2.1",
     "vierbergenlars/php-semver": "3.0.0-rc2",
-    "Textalk/php-SAI": "*"
+    "textalk/php-sai": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*",
@@ -33,6 +33,6 @@
   ],
   "autoload": {
     "psr-4": {"Diversity\\": "lib/"},
-    "classmap": ["vendor/Textalk/php-SAI/lib/"]
+    "classmap": ["vendor/textalk/php-sai/lib/"]
   }
 }
