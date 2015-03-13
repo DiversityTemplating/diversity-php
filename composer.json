@@ -17,12 +17,12 @@
   ],
   "require": {
     "mustache/mustache": "~2.1",
-    "vierbergenlars/php-semver": "3.0.0-rc2"
+    "vierbergenlars/php-semver": "3.0.0-rc2",
+    "Textalk/php-SAI": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*",
-    "satooshi/php-coveralls": "dev-master",
-    "Textalk/php-SAI": "*"
+    "satooshi/php-coveralls": "dev-master"
   },
   "license": "MIT",
   "authors": [
