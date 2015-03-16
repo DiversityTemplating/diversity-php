@@ -16,7 +16,10 @@ class Component {
     $this->spec     = $component_data['spec'];
     $this->name     = $this->spec->name;
     $this->version  = $this->spec->version;
-    $this->base_dir = $component_data['base_dir'];
+
+    if (array_key_exists('base_dir', $component_data)) {
+      $this->base_dir = $component_data['base_dir'];
+    }
 
     if (array_key_exists('base_url', $component_data)) {
       $this->base_url = $component_data['base_url'];
