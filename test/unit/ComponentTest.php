@@ -44,6 +44,18 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * @expectedException Diversity\ConfigurationException
+   * @expectedExceptionMessage Can't get URL without base_url.
+   */
+  public function testGetScriptsException() {
+    $factory = new Factory(array('archive' => FIXTURES . 'component_archive_1' . DS));
+    $component = $factory->get('test_3');
+
+    $styles = $component->getScripts();
+    $this->fail("Got script urls: " . json_encode($styles));
+  }
+
+  /**
    * @expectedException PHPUnit_Framework_Error_Warning
    * @expectedExceptionMessage Component needs prerequisite: value
    */

@@ -2,6 +2,8 @@
 
 namespace Diversity;
 
+use Diversity\Component;
+
 /**
  * A factory for constructing Component instances.
  *
@@ -25,4 +27,12 @@ class Factory {
   public function get($component, $version = null) {
     return $this->factory->get($component, $version);
   }
+
+  /**
+   * Get an asset - absolute or relative URL/path.
+   *
+   * (This need not be backwards compatible, it is called from the component, and the component
+   * knows its parent.)
+   */
+  public function getAsset(Component $component, $asset) {}
 }

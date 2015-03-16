@@ -16,7 +16,7 @@ class Component {
     $this->spec     = $component_data['spec'];
     $this->name     = $this->spec->name;
     $this->version  = $this->spec->version;
-    $this->location = $component_data['location'];
+    $this->base_dir = $component_data['base_dir'];
 
     if (array_key_exists('base_url', $component_data)) {
       $this->base_url = $component_data['base_url'];
@@ -29,18 +29,12 @@ class Component {
     if (!isset($this->spec->dependencies)) return array();
 
     foreach ($this->spec->dependencies as $name => $spec) {
-      /// @todo Accept any URI
-      //if (strpos($spec, 'http') === 0) {
-      //}
-      //else
-      {
-        // Assume $spec is a version.
-        $component = $this->factory->get("$name:$spec");
-        $dependencies[$name] = $component;
+      // Assume $spec is a version.
+      $component = $this->factory->get($name, $spec);
+      $dependencies[$name] = $component;
 
-        // Add the dependent components dependencies.
-        $dependencies = array_merge($dependencies, $component->getDependencies());
-      }
+      // Add the dependent components dependencies.
+      $dependencies = array_merge($dependencies, $component->getDependencies());
     }
 
     return $dependencies;
@@ -69,7 +63,7 @@ class Component {
 
   public function getOptionsSchema() {
     if (is_string($this->spec->options)) {
-      return json_decode(file_get_contents($this->location . $this->spec->options));
+      return json_decode(file_get_contents($this->base_dir . $this->spec->options));
     }
     else {
       return $this->spec->options;
@@ -103,7 +97,8 @@ class Component {
 
   public function getTemplate() {
     if (!isset($this->spec->template)) return false;
-    return file_get_contents($this->location . $this->spec->template);
+
+    return $this->factory->getAsset($this, $this->spec->template);
   }
 
   public function render($params = array()) {
@@ -121,7 +116,7 @@ class Component {
     $template_data->options      = $options;
     $template_data->options_json = json_encode($options);
 
-    if (!isset($this->base_url)) $template_data->baseUrl = $this->base_url;
+    if (!empty($this->base_url)) $template_data->baseUrl = $this->base_url;
 
     $template_data->testlist = array(
       array('name' => array('sv' => 'apa', 'en' => 'foo')),
@@ -138,8 +133,8 @@ class Component {
     //  $po_dir = $this->getAssetUrl() .
     //    substr($this->spec->i18n->$language->backend, 0, -strlen($language . '.po'));
     //  $gettext_domain = 'apa';//$this->name . ':' . $this->version;
-    //  bindtextdomain($gettext_domain, $this->location . 'locale');
-    //  //trigger_error("Set $gettext_domain to " . $this->location . 'locale');
+    //  bindtextdomain($gettext_domain, $this->base_dir . 'locale');
+    //  //trigger_error("Set $gettext_domain to " . $this->base_dir . 'locale');
     //
     //  $template_data->gettext = function($text, $mustache) use ($gettext_domain) {
     //    //trigger_error("domain: '$gettext_domain': " . dgettext($gettext_domain, trim($text)));
@@ -163,15 +158,15 @@ class Component {
             $template_data->context->$key = $data;
             break;
           }
-          case 'jsonrpc': {
-            $endpoint = $mustache->render($context_spec->endpoint, $template_data);
-            $params = $context_spec->params;
-            self::recursiveMustache($params, $template_data);
-
-            $data = $this->getJsonrpc($endpoint, $context_spec->method, $params);
-            $template_data->context->$key = $data;
-            break;
-          }
+          //case 'jsonrpc': {
+          //  $endpoint = $mustache->render($context_spec->endpoint, $template_data);
+          //  $params = $context_spec->params;
+          //  self::recursiveMustache($params, $template_data);
+          //
+          //  $data = $this->getJsonrpc($endpoint, $context_spec->method, $params);
+          //  $template_data->context->$key = $data;
+          //  break;
+          //}
           //case 'rest': {}
           default: trigger_error("Unhandled context type: " . $context_spec->type);
         }
@@ -186,38 +181,38 @@ class Component {
     return $mustache->render($template_html, $template_data);
   }
 
-  static private function recursiveMustache(&$obj, $data) {
-    static $mustache;
-
-    if (!isset($mustache)) $mustache = new \Mustache_Engine;
-
-    switch (gettype($obj)) {
-      case 'string': $obj = $mustache->render($obj, $data); break;
-      case 'object':
-      case 'array':  foreach ($obj as $key => &$value) self::recursiveMustache($value, $data); break;
-    }
-  }
-
-  static private function getJsonrpc($endpoint, $method, $params) {
-    $request_json = json_encode(
-      array(
-        'jsonrpc' => '2.0',
-        'id'      => 1,
-        'method'  => $method,
-        'params'  => $params,
-      )
-    );
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $endpoint);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $request_json);
-
-    $response_json = curl_exec($ch);
-    $response = json_decode($response_json);
-
-    return $response->result;
-  }
+  //static private function recursiveMustache(&$obj, $data) {
+  //  static $mustache;
+  //
+  //  if (!isset($mustache)) $mustache = new \Mustache_Engine;
+  //
+  //  switch (gettype($obj)) {
+  //    case 'string': $obj = $mustache->render($obj, $data); break;
+  //    case 'object':
+  //    case 'array':  foreach ($obj as $key => &$value) self::recursiveMustache($value, $data); break;
+  //  }
+  //}
+  //
+  //static private function getJsonrpc($endpoint, $method, $params) {
+  //  $request_json = json_encode(
+  //    array(
+  //      'jsonrpc' => '2.0',
+  //      'id'      => 1,
+  //      'method'  => $method,
+  //      'params'  => $params,
+  //    )
+  //  );
+  //
+  //  $ch = curl_init();
+  //  curl_setopt($ch, CURLOPT_URL, $endpoint);
+  //  curl_setopt($ch, CURLOPT_POST, 1);
+  //  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  //  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  //  curl_setopt($ch, CURLOPT_POSTFIELDS, $request_json);
+  //
+  //  $response_json = curl_exec($ch);
+  //  $response = json_decode($response_json);
+  //
+  //  return $response->result;
+  //}
 }

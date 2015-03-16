@@ -47,6 +47,10 @@ class Local extends \Diversity\Factory {
     return $component;
   }
 
+  public function getAsset(Component $component, $asset) {
+    return file_get_contents($component->base_dir . $asset);
+  }
+
   /**
    *
    * @todo Safe this up for missing dir, missing diversity.json, bad json
@@ -79,8 +83,8 @@ class Local extends \Diversity\Factory {
     }
 
     // Get diversity.json.
-    $component_data['location'] = $this->settings['archive'] . $component_data['subpath'];
-    $spec_file = $component_data['location'] . 'diversity.json';
+    $component_data['base_dir'] = $this->settings['archive'] . $component_data['subpath'];
+    $spec_file = $component_data['base_dir'] . 'diversity.json';
     if (file_exists($spec_file)) {
       $spec_json = file_get_contents($spec_file);
       if (empty($spec_json)) {
