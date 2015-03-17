@@ -47,8 +47,26 @@ class Local extends \Diversity\Factory {
     return $component;
   }
 
+  /**
+   * Get the asset content.
+   */
   public function getAsset(Component $component, $asset) {
-    return file_get_contents($component->base_dir . $asset);
+    return file_get_contents($this->joinPaths($component->base_dir, $asset));
+  }
+
+  /**
+   * Combine paths handling slashes.
+   *
+   * http://stackoverflow.com/questions/1091107/how-to-join-filesystem-path-strings-in-php/15575293#15575293
+   */
+  private function joinPaths() {
+    $paths = array();
+
+    foreach (func_get_args() as $arg) {
+      if ($arg !== '') { $paths[] = $arg; }
+    }
+
+    return preg_replace('#/+#','/',join('/', $paths));
   }
 
   /**
@@ -83,8 +101,10 @@ class Local extends \Diversity\Factory {
     }
 
     // Get diversity.json.
-    $component_data['base_dir'] = $this->settings['archive'] . $component_data['subpath'];
-    $spec_file = $component_data['base_dir'] . 'diversity.json';
+    $component_data['base_dir']
+      = $this->joinPaths($this->settings['archive'], $component_data['subpath']);
+    $spec_file = $this->joinPaths($component_data['base_dir'], 'diversity.json');
+
     if (file_exists($spec_file)) {
       $spec_json = file_get_contents($spec_file);
       if (empty($spec_json)) {
