@@ -120,6 +120,20 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('String: "svensk sträng"', $rendered_sv);
   }
 
+  /**
+   * @expectedException LogicException
+   * @expectedExceptionMessage base_url must end with a slash
+   */
+  public function testBadBaseUrl() {
+    $spec = new StdClass;
+    $spec->name    = 'dummy';
+    $spec->version = '1.2.3';
+
+    $component = new Component(
+      self::$factory, array('spec' => $spec, 'base_url' => 'bad_base_url_with_no_trailing_slash')
+    );
+  }
+
   /// @todo Test features:
 
   // When there are several matching versions, you should get the highest.

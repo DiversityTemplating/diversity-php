@@ -2,16 +2,19 @@
 
 namespace Diversity;
 
+use Diversity\Factory;
+
 use vierbergenlars\SemVer\version;
 use vierbergenlars\SemVer\expression;
 use vierbergenlars\SemVer\SemVerException;
+use LogicException;
 
 /**
  * Representing one actual component (in one specific version).
  */
 class Component {
 
-  public function __construct($factory, $component_data) {
+  public function __construct(Factory $factory, $component_data) {
     $this->factory  = $factory;
     $this->spec     = $component_data['spec'];
     $this->name     = $this->spec->name;
@@ -22,6 +25,11 @@ class Component {
     }
 
     if (array_key_exists('base_url', $component_data)) {
+      if (substr($component_data['base_url'], -1) !== '/') {
+        // We won't automatically add the slash - Components are produced by a factory, the factory
+        // coder should know what she's doing.
+        throw new LogicException('base_url must end with a slash.');
+      }
       $this->base_url = $component_data['base_url'];
     }
   }
@@ -52,14 +60,7 @@ class Component {
 
     if (!isset($this->spec->script)) return $scripts;
 
-    foreach ((array)$this->spec->script as $script) {
-      if (strpos($script, '//') !== false) {
-        $scripts[] = $script;
-        continue;
-      }
-
-      $scripts[] = $this->base_url . $script;
-    }
+    foreach ((array)$this->spec->script as $script) $scripts[] = $this->makeUrl($script);
 
     return $scripts;
   }
@@ -86,17 +87,23 @@ class Component {
 
     if (!isset($this->spec->style)) return $styles;
 
-    foreach ((array)$this->spec->style as $style) {
-      if (strpos($style, '//') !== false) {
-        $styles[] = $style;
-        continue;
-      }
-
-      $styles[] = $this->base_url . $style;
-    }
+    foreach ((array)$this->spec->style as $style) $styles[] = $this->makeUrl($style);
 
     return $styles;
   }
+
+  /**
+   * Takes a relative or absolut URL and returns an absolute URL (by adding base_url).
+   *
+   * @param string $url  A relative or absolut URL.
+   *
+   * @return string  The absolute URL.
+   */
+  private function makeUrl($url) {
+    if (strpos($url, '//') !== false) return $url; // Absolute URL already.
+    return $this->base_url . $url; // base_url always ends with a '/'.
+  }
+
 
   public function getTemplate() {
     if (!isset($this->spec->template)) return false;
