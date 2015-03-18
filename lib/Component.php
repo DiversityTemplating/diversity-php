@@ -2,23 +2,36 @@
 
 namespace Diversity;
 
+use Diversity\Factory;
+
 use vierbergenlars\SemVer\version;
 use vierbergenlars\SemVer\expression;
 use vierbergenlars\SemVer\SemVerException;
+use LogicException;
 
 /**
  * Representing one actual component (in one specific version).
  */
 class Component {
 
-  public function __construct($factory, $component_data) {
+  public function __construct(Factory $factory, $component_data) {
     $this->factory  = $factory;
     $this->spec     = $component_data['spec'];
     $this->name     = $this->spec->name;
     $this->version  = $this->spec->version;
-    $this->location = $component_data['location'];
-    $this->subpath  = $component_data['subpath'];
-    $this->type     = isset($this->spec->type) ? $this->spec->type : 'backend';
+
+    if (array_key_exists('base_dir', $component_data)) {
+      $this->base_dir = $component_data['base_dir'];
+    }
+
+    if (array_key_exists('base_url', $component_data)) {
+      if (substr($component_data['base_url'], -1) !== '/') {
+        // We won't automatically add the slash - Components are produced by a factory, the factory
+        // coder should know what she's doing.
+        throw new LogicException('base_url must end with a slash.');
+      }
+      $this->base_url = $component_data['base_url'];
+    }
   }
 
   public function getDependencies() {
@@ -27,55 +40,34 @@ class Component {
     if (!isset($this->spec->dependencies)) return array();
 
     foreach ($this->spec->dependencies as $name => $spec) {
-      /// @todo Accept any URI
-      //if (strpos($spec, 'http') === 0) {
-      //}
-      //else
-      {
-        // Assume $spec is a version.
-        $component = $this->factory->get("$name:$spec");
-        $dependencies[$name] = $component;
+      // Assume $spec is a version.
+      $component = $this->factory->get($name, $spec);
+      $dependencies[$name] = $component;
 
-        // Add the dependent components dependencies.
-        $dependencies = array_merge($dependencies, $component->getDependencies());
-      }
+      // Add the dependent components dependencies.
+      $dependencies = array_merge($dependencies, $component->getDependencies());
     }
 
     return $dependencies;
   }
 
-  /**
-   * @return string|boolean The base-url for publically accessible assets, or false.
-   *
-   * @todo Add false for proprietary components.
-   */
-  public function getAssetUrl() {
-    if (strpos($this->location, 'http') === 0) return $this->location;
-
-    return $this->factory->getArchiveUrl() . $this->subpath;
-  }
-
   public function getScripts() {
-    $asset_url = $this->getAssetUrl();
+    if (!isset($this->base_url)) {
+      throw new ConfigurationException("Can't get URL without base_url.");
+    }
+
     $scripts   = array();
 
     if (!isset($this->spec->script)) return $scripts;
 
-    foreach ((array)$this->spec->script as $script) {
-      if (strpos($script, '//') !== false) {
-        $scripts[] = $script;
-        continue;
-      }
-
-      $scripts[] = $asset_url . $script;
-    }
+    foreach ((array)$this->spec->script as $script) $scripts[] = $this->makeUrl($script);
 
     return $scripts;
   }
 
   public function getOptionsSchema() {
     if (is_string($this->spec->options)) {
-      return json_decode(file_get_contents($this->location . $this->spec->options));
+      return json_decode(file_get_contents($this->base_dir . $this->spec->options));
     }
     else {
       return $this->spec->options;
@@ -87,26 +79,36 @@ class Component {
    * @exception Diversity\ConfigurationException if run with no archive_url
    */
   public function getStyles() {
-    $asset_url  = $this->getAssetUrl();
+    if (!isset($this->base_url)) {
+      throw new ConfigurationException("Can't get URL without base_url.");
+    }
+
     $styles = array();
 
     if (!isset($this->spec->style)) return $styles;
 
-    foreach ((array)$this->spec->style as $style) {
-      if (strpos($style, '//') !== false) {
-        $styles[] = $style;
-        continue;
-      }
-
-      $styles[] = $asset_url . $style;
-    }
+    foreach ((array)$this->spec->style as $style) $styles[] = $this->makeUrl($style);
 
     return $styles;
   }
 
+  /**
+   * Takes a relative or absolut URL and returns an absolute URL (by adding base_url).
+   *
+   * @param string $url  A relative or absolut URL.
+   *
+   * @return string  The absolute URL.
+   */
+  private function makeUrl($url) {
+    if (strpos($url, '//') !== false) return $url; // Absolute URL already.
+    return $this->base_url . $url; // base_url always ends with a '/'.
+  }
+
+
   public function getTemplate() {
     if (!isset($this->spec->template)) return false;
-    return file_get_contents($this->location . $this->spec->template);
+
+    return $this->factory->getAsset($this, $this->spec->template);
   }
 
   public function render($params = array()) {
@@ -123,7 +125,8 @@ class Component {
     $template_data->language     = $language;
     $template_data->options      = $options;
     $template_data->options_json = json_encode($options);
-    $template_data->baseUrl      = $this->getAssetUrl();
+
+    if (!empty($this->base_url)) $template_data->baseUrl = $this->base_url;
 
     $template_data->testlist = array(
       array('name' => array('sv' => 'apa', 'en' => 'foo')),
@@ -134,20 +137,6 @@ class Component {
     $template_data->lang = function($text, $mustache) use ($language) {
       return $mustache->render(str_replace('{{lang}}', $language, $text));
     };
-
-    /// @todo Handle gettext
-    //if (isset($this->spec->i18n->$language->backend)) {
-    //  $po_dir = $this->getAssetUrl() .
-    //    substr($this->spec->i18n->$language->backend, 0, -strlen($language . '.po'));
-    //  $gettext_domain = 'apa';//$this->name . ':' . $this->version;
-    //  bindtextdomain($gettext_domain, $this->location . 'locale');
-    //  //trigger_error("Set $gettext_domain to " . $this->location . 'locale');
-    //
-    //  $template_data->gettext = function($text, $mustache) use ($gettext_domain) {
-    //    //trigger_error("domain: '$gettext_domain': " . dgettext($gettext_domain, trim($text)));
-    //    return $mustache->render(dgettext($gettext_domain, trim($text)));
-    //  };
-    //}
 
     /// @todo Handle dynamic context.
 
@@ -165,16 +154,6 @@ class Component {
             $template_data->context->$key = $data;
             break;
           }
-          case 'jsonrpc': {
-            $endpoint = $mustache->render($context_spec->endpoint, $template_data);
-            $params = $context_spec->params;
-            self::recursiveMustache($params, $template_data);
-
-            $data = $this->getJsonrpc($endpoint, $context_spec->method, $params);
-            $template_data->context->$key = $data;
-            break;
-          }
-          //case 'rest': {}
           default: trigger_error("Unhandled context type: " . $context_spec->type);
         }
 
@@ -186,40 +165,5 @@ class Component {
     }
 
     return $mustache->render($template_html, $template_data);
-  }
-
-  static private function recursiveMustache(&$obj, $data) {
-    static $mustache;
-
-    if (!isset($mustache)) $mustache = new \Mustache_Engine;
-
-    switch (gettype($obj)) {
-      case 'string': $obj = $mustache->render($obj, $data); break;
-      case 'object':
-      case 'array':  foreach ($obj as $key => &$value) self::recursiveMustache($value, $data); break;
-    }
-  }
-
-  static private function getJsonrpc($endpoint, $method, $params) {
-    $request_json = json_encode(
-      array(
-        'jsonrpc' => '2.0',
-        'id'      => 1,
-        'method'  => $method,
-        'params'  => $params,
-      )
-    );
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $endpoint);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $request_json);
-
-    $response_json = curl_exec($ch);
-    $response = json_decode($response_json);
-
-    return $response->result;
   }
 }
