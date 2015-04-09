@@ -10,8 +10,6 @@ use Diversity\Component;
  * @todo This will be abstract, use the subclasses instead.
  */
 abstract class Factory {
-  abstract public function __construct($settings = array());
-
   /**
    * Get a Component
    *
