@@ -1,0 +1,10 @@
+{
+  "name": "test_7",
+  "version": "0.1.2",
+  "template": "template.html",
+  "context": {
+    "ohmy": {
+      "type": "unknown"
+    }
+  }
+}

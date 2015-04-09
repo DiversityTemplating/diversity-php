@@ -9,30 +9,21 @@ use Diversity\Component;
  *
  * @todo This will be abstract, use the subclasses instead.
  */
-class Factory {
-  private $factory;
-
-  /**
-   * @deprecated Use the subclasses instead
-   */
-  public function __construct($settings = array()) {
-    $this->factory = new Factory\Local($settings);
-  }
+abstract class Factory {
+  abstract public function __construct($settings = array());
 
   /**
    * Get a Component
    *
+   * @param string $component  Component name
+   * @param string $version    Component version
+   *
    * @return Diversity\Component
    */
-  public function get($component, $version = null) {
-    return $this->factory->get($component, $version);
-  }
+  abstract public function get($component, $version = null);
 
   /**
    * Get an asset - absolute or relative URL/path.
-   *
-   * (This need not be backwards compatible, it is called from the component, and the component
-   * knows its parent.)
    */
-  public function getAsset(Component $component, $asset) {}
+  abstract public function getAsset(Component $component, $asset);
 }

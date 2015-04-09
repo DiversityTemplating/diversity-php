@@ -24,16 +24,16 @@ class Local extends \Diversity\Factory {
 
   public function get($component, $version = null) {
     // Supporting deprecated format of component:version
-    $spec = $component . ($version ? ':' . $version : '');
+    $cache_key = $component . ($version ? ':' . $version : '');
 
-    if (array_key_exists($spec, $this->components)) return $this->components[$spec];
+    if (array_key_exists($cache_key, $this->components)) return $this->components[$cache_key];
 
-    $component_data = $this->getComponentData($spec);
+    $component_data = $this->getComponentData($component, $version);
 
     if (!isset($component_data['spec'])) {
       /// @todo More verbose error message?  More specific exception type.
       throw new NotFoundException(
-        'Couldn\'t find component: ' . $spec . " in {$this->settings['archive']}"
+        'Couldn\'t find component: ' . $cache_key . " in {$this->settings['archive']}"
       );
     }
 
@@ -42,7 +42,7 @@ class Local extends \Diversity\Factory {
     }
 
     $component = new Component($this, $component_data);
-    $this->components[$spec] = $component;
+    $this->components[$cache_key] = $component;
 
     return $component;
   }
@@ -73,13 +73,12 @@ class Local extends \Diversity\Factory {
    *
    * @todo Safe this up for missing dir, missing diversity.json, bad json
    */
-  private function getComponentData($name) {
-    if (!preg_match('/^(?P<name>[a-zA-Z0-9-_]+)(:(?P<version_spec>[:0-9\.\^\~\=\>]*))?$/',
-                    $name, $component_data)) {
-      return false;
-    }
+  private function getComponentData($name, $version) {
+    $component_data['name'   ] = $name;
+    $component_data['version'] = $version;
+    $component_data['subpath'] = $name . '/';
 
-    $component_data['subpath'] = $component_data['name'] . '/';
+    if (!file_exists($this->settings['archive'] . $component_data['subpath'])) return false;
     $version_dirs = scandir($this->settings['archive'] . $component_data['subpath']);
 
     $version_spec = new expression(

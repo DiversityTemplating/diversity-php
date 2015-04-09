@@ -65,12 +65,12 @@ class Component {
     return $scripts;
   }
 
-  public function getOptionsSchema() {
-    if (is_string($this->spec->options)) {
-      return json_decode(file_get_contents($this->base_dir . $this->spec->options));
+  public function getSettingsSchema() {
+    if (is_string($this->spec->settings)) {
+      return json_decode($this->factory->getAsset($this, $this->spec->settings));
     }
     else {
-      return $this->spec->options;
+      return $this->spec->settings;
     }
   }
 
@@ -114,28 +114,25 @@ class Component {
   public function render($params = array()) {
     if (!($template_html = $this->getTemplate())) return '';
 
-    /// @todo Strip out all defaults from option schema, merge with chosen options.
+    /// @todo Strip out all defaults from settings schema, merge with chosen settings.
     $mustache      = new \Mustache_Engine;
-    $options       = isset($params['options'      ]) ? $params['options']       : array();
+    $settings      = isset($params['settings'     ]) ? $params['settings'     ] : array();
     $prerequisites = isset($params['prerequisites']) ? $params['prerequisites'] : array();
-    $theme_index   = isset($params['theme'        ]) ? intval($params['theme']) : 0;
-    $language      = isset($params['language'     ]) ? $params['language']      : 'en';
+    $language      = isset($params['language'     ]) ? $params['language'     ] : 'en';
 
     $template_data = new \stdClass;
     $template_data->language     = $language;
-    $template_data->options      = $options;
-    $template_data->options_json = json_encode($options);
+    $template_data->settings     = $settings;
+    $template_data->settingsJSON = json_encode($settings);
 
     if (!empty($this->base_url)) $template_data->baseUrl = $this->base_url;
 
-    $template_data->testlist = array(
-      array('name' => array('sv' => 'apa', 'en' => 'foo')),
-      array('name' => array('sv' => 'bepa', 'en' => 'bar')),
-    );
-
-    // Handle lang to be able to use e.g. {{#lang}}{{name.{{lang}}}}{{/lang}}
+    // Handle lang to be able to use e.g. {{#lang}}{{name.lang}}{{/lang}}
     $template_data->lang = function($text, $mustache) use ($language) {
-      return $mustache->render(str_replace('{{lang}}', $language, $text));
+      // HACK! It seems PHP mustache FORGETS that the delimiter is switched.
+      $text = str_replace('[[', '{{', $text);
+      $text = str_replace(']]', '}}', $text);
+      return $mustache->render(str_replace('lang', $language, $text));
     };
 
     /// @todo Handle dynamic context.
@@ -147,14 +144,15 @@ class Component {
         switch (isset($context_spec->type) ? $context_spec->type : 'prerequisites') {
           case 'prerequisite': {
             if (!array_key_exists($key, $prerequisites)) {
-              trigger_error("Component needs prerequisite: $key", E_USER_WARNING);
+              trigger_error("Component $this needs prerequisite: $key", E_USER_WARNING);
             }
             $data = isset($prerequisites[$key]) ? $prerequisites[$key] : null;
 
             $template_data->context->$key = $data;
             break;
           }
-          default: trigger_error("Unhandled context type: " . $context_spec->type);
+          default: trigger_error("Unhandled context type in $this: "
+                                 . $context_spec->type, E_USER_WARNING);
         }
 
         if (isset($context_spec->json) && $context_spec->json === true) {
@@ -163,7 +161,20 @@ class Component {
         }
       }
     }
+    {
+      $template_data->angularBootstrap = $params['angularBootstrap'];
+      $template_data->scripts          = $params['scripts'];
+      $template_data->styles           = $params['styles'];
+    }
 
-    return $mustache->render($template_html, $template_data);
+    $html = $mustache->render($template_html, $template_data);
+
+//echo "Rendering $this with context '" . json_encode($template_data) . "': $html\n";
+
+    return $html;
+  }
+
+  public function __toString() {
+    return $this->name . ':' . $this->version;
   }
 }

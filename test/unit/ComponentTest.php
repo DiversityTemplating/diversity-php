@@ -1,13 +1,13 @@
 <?php
 
 use Diversity\Component;
-use Diversity\Factory;
+use Diversity\Factory\Local;
 
 class ComponentTest extends PHPUnit_Framework_TestCase {
   static private $factory;
 
   static public function setUpBeforeClass() {
-    self::$factory = new Factory(
+    self::$factory = new Local(
       array(
         'archive'       => FIXTURES . 'component_archive_1' . DS,
         'archive_url'   => 'http://foo.bar/'
@@ -36,7 +36,7 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
    * @expectedExceptionMessage Can't get URL without base_url.
    */
   public function testGetStylesException() {
-    $factory = new Factory(array('archive' => FIXTURES . 'component_archive_1' . DS));
+    $factory = new Local(array('archive' => FIXTURES . 'component_archive_1' . DS));
     $component = $factory->get('test_3');
 
     $styles = $component->getStyles();
@@ -48,7 +48,7 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
    * @expectedExceptionMessage Can't get URL without base_url.
    */
   public function testGetScriptsException() {
-    $factory = new Factory(array('archive' => FIXTURES . 'component_archive_1' . DS));
+    $factory = new Local(array('archive' => FIXTURES . 'component_archive_1' . DS));
     $component = $factory->get('test_3');
 
     $styles = $component->getScripts();
@@ -57,10 +57,10 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @expectedException PHPUnit_Framework_Error_Warning
-   * @expectedExceptionMessage Component needs prerequisite: value
+   * @expectedExceptionMessage Component test1:1.0.0 needs prerequisite: value
    */
   public function testRenderWarningOnPrerequisite() {
-    $factory = new Factory(
+    $factory = new Local(
       array('archive' => FIXTURES . 'component_archive_3' . DS, 'archive_url' => 'dummy')
     );
     $component = $factory->get('test1');
@@ -80,17 +80,26 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
       'Here we can display Some Data.  JSON: {"title":"Some Data"}.', $rendered);
   }
 
-  public function testGetOptionsSchemaFromInline() {
-    $component = self::$factory->get('test_1:0.1.0');
-    $schema = $component->getOptionsSchema();
+  /**
+   * @expectedException PHPUnit_Framework_Error_Warning
+   * @expectedExceptionMessage Unhandled context type in test_7:0.1.2: unknown
+   */
+  public function testRenderWithBadContextType() {
+    $component = self::$factory->get('test_7');
+    $rendered = $component->render();
+  }
+
+  public function testGetSettingsSchemaFromInline() {
+    $component = self::$factory->get('test_1', '0.1.0');
+    $schema = $component->getSettingsSchema();
 
     $this->assertEquals("Simple option", $schema->title);
     $this->assertEquals("string", $schema->type);
   }
 
-  public function testGetOptionsSchemaFromFile() {
+  public function testGetSettingsSchemaFromFile() {
     $component = self::$factory->get('test_3');
-    $schema = $component->getOptionsSchema();
+    $schema = $component->getSettingsSchema();
 
     $this->assertEquals("object", $schema->type);
     $this->assertEquals("Your name", $schema->properties->name->title);
@@ -108,7 +117,7 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
       )
     );
 
-    $this->assertEquals('String: "english string"', $rendered_en);
+    $this->assertEquals("String: \"english string\"\n", $rendered_en);
 
     $rendered_sv = $component->render(
       array(
@@ -117,7 +126,7 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
       )
     );
 
-    $this->assertEquals('String: "svensk sträng"', $rendered_sv);
+    $this->assertEquals("String: \"svensk sträng\"\n", $rendered_sv);
   }
 
   /**
