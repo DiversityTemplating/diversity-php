@@ -1,0 +1,9 @@
+{
+  "name":     "test_9",
+  "version":  "1.0.0",
+  "template": "template.html",
+  "style":    "style.css",
+  "context": {
+    "styles": {"type": "rendered"}
+  }
+}

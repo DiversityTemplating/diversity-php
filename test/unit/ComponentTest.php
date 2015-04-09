@@ -149,6 +149,28 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("Scripts here:\n→http://foo.bar/test_8/1.0.0/script.js←\n", $rendered);
   }
 
+  public function testRenderStyles() {
+    $component = self::$factory->get('test_9');
+    $rendered = $component->render();
+    $this->assertEquals("Styles here:\n→http://foo.bar/test_9/1.0.0/style.css←\n", $rendered);
+  }
+
+  public function testRenderAngularBootstrap() {
+    $component = self::$factory->get('test_11');
+    $rendered = $component->render();
+    $this->assertEquals("<script>angular.bootstrap(document, [&quot;mymodule&quot;]);\n</script>\n",
+                        $rendered);
+  }
+
+  /**
+   * @expectedException PHPUnit_Framework_Error_Warning
+   * @expectedExceptionMessage Unknown key for renderer type context in test_10:1.0.0: fubar
+   */
+  public function testRenderBad() {
+    $component = self::$factory->get('test_10');
+    $rendered = $component->render();
+  }
+
   /// @todo Test features:
 
   // When there are several matching versions, you should get the highest.
