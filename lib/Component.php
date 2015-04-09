@@ -151,6 +151,33 @@ class Component {
             $template_data->context->$key = $data;
             break;
           }
+          case 'rendered': {
+            if (!isset($collection)) {
+              $collection = new Collection();
+              if (isset($params['components'])) {
+                foreach ($components as $component) $collection->add($component);
+              }
+              else $collection->add($this);
+            }
+            // The rendering Engine could provide three things:
+            switch ($key) {
+              case 'angularBootstrap': {
+                $template_data->context->angularBootstrap = $collection->renderAngularBootstrap();
+                break;
+              }
+              case 'scripts': {
+                $template_data->context->scripts = $collection->getScripts();
+                break;
+              }
+              case 'styles': {
+                $template_data->context->styles = $collection->getStyles();
+                break;
+              }
+              default: trigger_error("Unknown key for renderer type context in $this: $key",
+                                     E_USER_WARNING);
+            }
+            break;
+          }
           default: trigger_error("Unhandled context type in $this: "
                                  . $context_spec->type, E_USER_WARNING);
         }
@@ -161,15 +188,8 @@ class Component {
         }
       }
     }
-    {
-      $template_data->angularBootstrap = $params['angularBootstrap'];
-      $template_data->scripts          = $params['scripts'];
-      $template_data->styles           = $params['styles'];
-    }
 
     $html = $mustache->render($template_html, $template_data);
-
-//echo "Rendering $this with context '" . json_encode($template_data) . "': $html\n";
 
     return $html;
   }

@@ -143,6 +143,12 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     );
   }
 
+  public function testRenderScripts() {
+    $component = self::$factory->get('test_8');
+    $rendered = $component->render();
+    $this->assertEquals("Scripts here:\n→http://foo.bar/test_8/1.0.0/script.js←\n", $rendered);
+  }
+
   /// @todo Test features:
 
   // When there are several matching versions, you should get the highest.

@@ -1,0 +1,9 @@
+{
+  "name":     "test_8",
+  "version":  "1.0.0",
+  "template": "template.html",
+  "script":   "script.js",
+  "context": {
+    "scripts": {"type": "rendered"}
+  }
+}
