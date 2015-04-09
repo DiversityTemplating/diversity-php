@@ -23,7 +23,6 @@ class Local extends \Diversity\Factory {
   }
 
   public function get($component, $version = null) {
-    // Supporting deprecated format of component:version
     $cache_key = $component . ($version ? ':' . $version : '');
 
     if (array_key_exists($cache_key, $this->components)) return $this->components[$cache_key];
