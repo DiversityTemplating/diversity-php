@@ -67,7 +67,7 @@ class Component {
   }
 
   public function getSettingsSchema() {
-    if (is_string($this->spec->settings)) {
+    if (isset($this->spec->settings) && is_string($this->spec->settings)) {
       return json_decode($this->factory->getAsset($this, $this->spec->settings));
     }
     else {
