@@ -1,0 +1,32 @@
+<html>
+  <head>
+    {{#context.styles}}
+      <link href="{{.}}" rel="stylesheet" />
+    {{/context.styles}}
+    <title>{{#lang}}{{settings.title.lang}}{{/lang}}</title>
+
+    <script type="text/javascript">
+      window.tws = { data: { } };
+      {{#context.l10n}}
+        window.tws.data['{{{component}}}'] = { messages: {{{messages}}} };
+      {{/context.l10n}}
+    </script>
+  </head>
+  <body>
+    Output from simple: {{{settings.simple.componentHTML}}}
+
+    Output from mylist:
+    {{#settings.mylist}}
+      {{{componentHTML}}}
+    {{/settings.mylist}}
+
+    Output from myByLanguage in {{language}}: {{#lang}}{{{settings.myByLanguage.lang.componentHTML}}}{{/lang}}
+
+    {{#context.scripts}}
+      <script src="{{.}}"></script>
+    {{/context.scripts}}
+    <script>
+      {{context.angularBootstrap}}
+    </script>
+  </body>
+</html>

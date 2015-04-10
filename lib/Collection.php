@@ -59,6 +59,25 @@ class Collection {
     return $tags;
   }
 
+  /**
+   * @return array List of localizations: objects with component and messages.
+   */
+  public function getViewL10ns($language) {
+    $l10ns = array();
+
+    foreach ($this->getAllComponents() as $component) {
+      $l10n_messages = $component->getViewL10n($language);
+      if ($l10n_messages === false) continue;
+
+      $l10n = new \StdClass;
+      $l10n->component = $component->name;
+      $l10n->messages  = $l10n_messages;
+      $l10ns[] = $l10n;
+    }
+
+    return $l10ns;
+  }
+
   public function getAllComponents() {
     $all_components = array();
 

@@ -1,0 +1,47 @@
+{
+  "name":     "test_12",
+  "version":  "1.0.0",
+  "template": "template.html",
+  "script":   "test_12.js",
+  "angular":  "test_12",
+  "l10n": {
+    "sv": {"view": "po/test_12/sv.json"}
+  },
+  "settings": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type":   "object",
+        "format": "byLanguage",
+        "additionalProperties": {"type": "string"}
+      },
+      "simple": {
+        "type":   "object",
+        "format": "diversity"
+      },
+      "mylist": {
+        "type": "array",
+        "items": {
+          "type":   "object",
+          "format": "diversity"
+        }
+      },
+      "myByLanguage": {
+        "type": "object",
+        "additionalProperties": {
+          "type":   "object",
+          "format": "diversity"
+        }
+      }
+    }
+  },
+  "context": {
+    "styles":           {"type": "rendered"},
+    "scripts":          {"type": "rendered"},
+    "angularBootstrap": {"type": "rendered"},
+    "l10n":             {"type": "rendered"}
+  },
+  "dependencies": {
+    "test_11": "*"
+  }
+}

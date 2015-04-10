@@ -15,6 +15,7 @@ use LogicException;
 class Component {
 
   public function __construct(Factory $factory, $component_data) {
+
     $this->factory  = $factory;
     $this->spec     = $component_data['spec'];
     $this->name     = $this->spec->name;
@@ -93,6 +94,14 @@ class Component {
   }
 
   /**
+   * @return string View localization json as string.
+   */
+  public function getViewL10n($language) {
+    if (!isset($this->spec->l10n->$language->view)) return false;
+    return $this->factory->getAsset($this, $this->spec->l10n->$language->view);
+  }
+
+  /**
    * Takes a relative or absolut URL and returns an absolute URL (by adding base_url).
    *
    * @param string $url  A relative or absolut URL.
@@ -155,7 +164,7 @@ class Component {
             if (!isset($collection)) {
               $collection = new Collection();
               if (isset($params['components'])) {
-                foreach ($components as $component) $collection->add($component);
+                foreach ($params['components'] as $component) $collection->add($component);
               }
               else $collection->add($this);
             }
@@ -171,6 +180,10 @@ class Component {
               }
               case 'styles': {
                 $template_data->context->styles = $collection->getStyles();
+                break;
+              }
+              case 'l10n': {
+                $template_data->context->l10n = $collection->getViewL10ns($language);
                 break;
               }
               default: trigger_error("Unknown key for renderer type context in $this: $key",

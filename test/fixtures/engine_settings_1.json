@@ -1,0 +1,25 @@
+{
+  "component": "test_12",
+  "version":   "1.0.0",
+  "settings": {
+    "title": {
+      "sv": "Svenskus Titlus",
+      "en": "På engelska"
+    },
+    "simple": {
+      "component": "test_5"
+    },
+    "mylist": [
+      {
+        "component": "test_6"
+      },
+      {
+        "component": "test_6"
+      }
+    ],
+    "myByLanguage": {
+      "sv": {"component": "test_8"},
+      "en": {"component": "test_9"}
+    }
+  }
+}
