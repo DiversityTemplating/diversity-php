@@ -35,6 +35,7 @@ class Engine {
         = $this->expandSettings($schema, $settings->settings, $params, $path, $component);
       $components = array_unique(array_merge($components, $sub_components));
     }
+    else $expanded_settings = null;
 
     // 3. Render mustache
     $html = $this->renderHtml($component, $components, $expanded_settings, $params, $path);
