@@ -71,7 +71,7 @@ class Component {
       return json_decode($this->factory->getAsset($this, $this->spec->settings));
     }
     else {
-      return $this->spec->settings;
+      return isset($this->spec->settings) ? $this->spec->settings : null;
     }
   }
 
