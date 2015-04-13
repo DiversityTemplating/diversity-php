@@ -30,8 +30,6 @@ class Api extends Factory {
   public function get($component, $version = null) {
     if (isset($this->instances[$component])) return $this->instances[$component];
 
-//echo microtime(true) . ": Loading $component:$version<br/>\n";
-
     if ($version[0] === '^') {
       // Caret ^ ranges - Allow changes that do not modify the left-most non-zero digit.
       $version_parts = explode('.', substr($version, 1)); // Split into parts

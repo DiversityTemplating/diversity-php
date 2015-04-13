@@ -58,8 +58,8 @@ class Engine {
         if (isset($schema->properties->$key)) $sub_schema = $schema->properties->$key;
         elseif (isset($schema->additionalProperties)) $sub_schema = $schema->additionalProperties;
         else {
-          //trigger_error("Couldn't add setting '$key' to '$component' at /"
-          //              . implode('/', $path), E_USER_WARNING);
+          trigger_error("Couldn't add setting '$key' to '$component' at /"
+                        . implode('/', $path), E_USER_WARNING);
           next;
         }
 
@@ -67,7 +67,7 @@ class Engine {
         if (isset($sub_schema->format) && $sub_schema->format === 'diversity') {
           list($sub_components, $settings->$key->componentHTML)
             = $this->subRender($sub_settings, $params, $sub_path);
-          unset($settings->$key->settings); // Will this help?
+          unset($settings->$key->settings);
         }
         else {
           list($sub_components, $settings->$key)
@@ -88,7 +88,7 @@ class Engine {
         if (isset($sub_schema->format) && $sub_schema->format === 'diversity') {
           list($sub_components, $settings[$index]->componentHTML)
             = $this->subRender($sub_settings, $params, $sub_path);
-          unset($settings[$index]->settings); // Will this help?
+          unset($settings[$index]->settings);
         }
         else {
           list($sub_components, $settings[$index])
