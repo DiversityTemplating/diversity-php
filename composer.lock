@@ -58,7 +58,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Textalk/php-SAI.git",
-                "reference": "7bec6eafb70568c6b5e4abfa7a5cb18ead6fbd70"
+                "reference": "74de4397fbbcbb7958c78a1cb90c23b215b84240"
             },
             "require-dev": {
                 "phpunit/phpunit": "4.1.*",
@@ -70,7 +70,7 @@
                     "SAI\\": "lib/"
                 }
             },
-            "time": "2015-05-07 12:02:35"
+            "time": "2015-05-07 12:50:33"
         },
         {
             "name": "vierbergenlars/php-semver",
