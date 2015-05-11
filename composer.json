@@ -1,5 +1,5 @@
 {
-  "name": "textalk/diversity-php",
+  "name": "diversity_templating/diversity-php",
   "description": "Engine for generic HTML components",
   "require": {
     "mustache/mustache": "~2.1",

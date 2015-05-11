@@ -18,7 +18,7 @@ that use.
 Using
 -----
 
-1. Add composer dependency: `"textalk/diversity-php": "1.0"`
+1. Add composer dependency: `"diversity_templating/diversity-php": "1.0"`
 
 2. "Use" it:
 ```php
