@@ -44,6 +44,18 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
+   * @expectedException Diversity\ConfigurationException
+   * @expectedExceptionMessage Can't get URL without base_url.
+   */
+  public function testGetScriptsException() {
+    $factory = new Factory(array('archive' => FIXTURES . 'component_archive_1' . DS));
+    $component = $factory->get('test_3');
+
+    $styles = $component->getScripts();
+    $this->fail("Got script urls: " . json_encode($styles));
+  }
+
+  /**
    * @expectedException PHPUnit_Framework_Error_Warning
    * @expectedExceptionMessage Component needs prerequisite: value
    */
@@ -106,6 +118,20 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     );
 
     $this->assertEquals('String: "svensk sträng"', $rendered_sv);
+  }
+
+  /**
+   * @expectedException LogicException
+   * @expectedExceptionMessage base_url must end with a slash
+   */
+  public function testBadBaseUrl() {
+    $spec = new StdClass;
+    $spec->name    = 'dummy';
+    $spec->version = '1.2.3';
+
+    $component = new Component(
+      self::$factory, array('spec' => $spec, 'base_url' => 'bad_base_url_with_no_trailing_slash')
+    );
   }
 
   /// @todo Test features:

@@ -28,6 +28,18 @@ class Api extends Factory {
    * @return Diversity\Component
    */
   public function get($component, $version = null) {
+    if ($version[0] === '^') {
+      // Caret ^ ranges - Allow changes that do not modify the left-most non-zero digit.
+      $version_parts = explode('.', substr($version, 1)); // Split into parts
+
+      $version = '';
+      foreach ($version_parts as $part) {
+        $version .= $part;
+        if ($part !== '0') break;
+        $version .= '.';
+      }
+    }
+
     $url = $this->api_url . 'components/'
       . $component . '/' . ($version === null ? '*' : $version) . '/';
 
@@ -56,5 +68,11 @@ class Api extends Factory {
         'base_url' => $url . 'files/',
       )
     );
+  }
+
+  public function getAsset(Component $component, $asset) {
+    $ch = $this->curl_if->init($component->base_url . $asset);
+    $this->curl_if->setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    return $this->curl_if->exec($ch);
   }
 }
