@@ -2,10 +2,12 @@
 
 use Diversity\Component;
 use Diversity\Factory\Api;
+use SAI\Mock\Curl;
 
 class FactoryApiTest extends PHPUnit_Framework_TestCase {
   public function testGetSpecificVersion() {
-    $curl_if = new SAI_CurlStub();
+    $curl_if = new Curl();
+
     $curl_if->setResponse(
       json_encode(array('name' => 'test', 'version' => '1.2.3')),
       array(CURLOPT_URL => 'https://api.diversity.io/components/test/1.2.3/')
@@ -20,7 +22,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testGetCaretMinor() {
-    $curl_if = new SAI_CurlStub();
+    $curl_if = new Curl();
     $curl_if->setResponse(
       json_encode(array('name' => 'test', 'version' => '0.2.1')),
       array(CURLOPT_URL => 'https://api.diversity.io/components/test/0.2/')
@@ -33,7 +35,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testGetCaretMajor() {
-    $curl_if = new SAI_CurlStub();
+    $curl_if = new Curl();
     $curl_if->setResponse(
       json_encode(array('name' => 'test', 'version' => '1.2.3')),
       array(CURLOPT_URL => 'https://api.diversity.io/components/test/1/')
@@ -48,7 +50,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testGetTemplate() {
-    $curl_if = new SAI_CurlStub();
+    $curl_if = new Curl();
     $curl_if->setResponse(
       json_encode(array('name' => 'test', 'version' => '1.2.3', 'template' => 'foo.html')),
       array(CURLOPT_URL => 'https://api.diversity.io/components/test/1.2.3/')
@@ -69,7 +71,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
    * @expectedExceptionMessage Didn't find a component at
    */
   public function testGetNonExistent() {
-    $curl_if = new SAI_CurlStub();
+    $curl_if = new Curl();
     $factory = new Api('https://api.diversity.io/', $curl_if);
     $component = $factory->get('test', '1.2.3');
 
@@ -79,7 +81,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testGetStyles() {
-    $curl_if = new SAI_CurlStub();
+    $curl_if = new Curl();
 
     $curl_if->setResponse(
       file_get_contents(FIXTURES . 'component_archive_1/test_3/0.0.1/diversity.json'),

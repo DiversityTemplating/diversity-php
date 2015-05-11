@@ -5,7 +5,7 @@ namespace Diversity\Factory;
 use Diversity\NotFoundException;
 use Diversity\Component;
 use Diversity\Factory;
-use SAI_CurlInterface;
+use SAI\Curl;
 
 /**
  * Factory for getting Components out of a diversity-api server.
@@ -15,9 +15,9 @@ class Api extends Factory {
 
   /**
    * @param string $api_url URL to a diversity-api, for example "https://api.diversity.io/".
-   * @param SAI_CurlInterface
+   * @param SAI\Curl
    */
-  public function __construct($api_url, SAI_CurlInterface $curl_if) {
+  public function __construct($api_url, Curl $curl_if) {
     $this->api_url = $api_url;
     $this->curl_if = $curl_if;
   }
@@ -43,13 +43,13 @@ class Api extends Factory {
     $url = $this->api_url . 'components/'
       . $component . '/' . ($version === null ? '*' : $version) . '/';
 
-    $ch = $this->curl_if->curl_init($url);
-    $this->curl_if->curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $spec_json = $this->curl_if->curl_exec($ch);
+    $ch = $this->curl_if->init($url);
+    $this->curl_if->setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $spec_json = $this->curl_if->exec($ch);
 
     if (!$spec_json) {
       throw new NotFoundException(
-        "Didn't find a component at '$url': " . $this->curl_if->curl_error($ch)
+        "Didn't find a component at '$url': " . $this->curl_if->error($ch)
       );
     }
     $spec = json_decode($spec_json);
@@ -71,8 +71,8 @@ class Api extends Factory {
   }
 
   public function getAsset(Component $component, $asset) {
-    $ch = $this->curl_if->curl_init($component->base_url . $asset);
-    $this->curl_if->curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    return $this->curl_if->curl_exec($ch);
+    $ch = $this->curl_if->init($component->base_url . $asset);
+    $this->curl_if->setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    return $this->curl_if->exec($ch);
   }
 }

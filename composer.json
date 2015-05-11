@@ -4,7 +4,7 @@
   "require": {
     "mustache/mustache": "~2.1",
     "vierbergenlars/php-semver": "3.0.0-rc2",
-    "textalk/php-sai": "0.1.3"
+    "textalk/php-sai": "1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "*",
