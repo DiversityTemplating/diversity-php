@@ -54,7 +54,7 @@ class Collection {
       /// @todo Fetch and minify proprietary styles.
 
       $tags .= '<link rel="stylesheet" type="text/css" '
-        . 'href="' . htmlspecialchars($style) . '"></link>' . "\n";
+        . 'href="' . htmlspecialchars($style) . '">' . "\n";
     }
     return $tags;
   }
