@@ -10,7 +10,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
 
     $curl_if->setResponse(
       json_encode(array('name' => 'test', 'version' => '1.2.3')),
-      array(CURLOPT_URL => 'https://api.diversity.io/components/test/1.2.3/')
+      array(CURLOPT_URL => 'https://api.diversity.io/components/test/1.2.3/files/diversity.json')
     );
 
     $factory = new Api('https://api.diversity.io/', $curl_if);
@@ -25,7 +25,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
     $curl_if = new Curl();
     $curl_if->setResponse(
       json_encode(array('name' => 'test', 'version' => '0.2.1')),
-      array(CURLOPT_URL => 'https://api.diversity.io/components/test/0.2/')
+      array(CURLOPT_URL => 'https://api.diversity.io/components/test/0.2/files/diversity.json')
     );
 
     $factory = new Api('https://api.diversity.io/', $curl_if);
@@ -38,7 +38,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
     $curl_if = new Curl();
     $curl_if->setResponse(
       json_encode(array('name' => 'test', 'version' => '1.2.3')),
-      array(CURLOPT_URL => 'https://api.diversity.io/components/test/1/')
+      array(CURLOPT_URL => 'https://api.diversity.io/components/test/1/files/diversity.json')
     );
 
     $factory = new Api('https://api.diversity.io/', $curl_if);
@@ -53,7 +53,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
     $curl_if = new Curl();
     $curl_if->setResponse(
       json_encode(array('name' => 'test', 'version' => '1.2.3', 'template' => 'foo.html')),
-      array(CURLOPT_URL => 'https://api.diversity.io/components/test/1.2.3/')
+      array(CURLOPT_URL => 'https://api.diversity.io/components/test/1.2.3/files/diversity.json')
     );
     $curl_if->setResponse(
       'bar',
@@ -86,7 +86,7 @@ class FactoryApiTest extends PHPUnit_Framework_TestCase {
     $curl_if->setResponse(
       file_get_contents(FIXTURES . 'component_archive_1/test_3/0.0.1/diversity.json'),
       array(
-        CURLOPT_URL => 'https://api.diversity.io/components/test_3/*/'
+        CURLOPT_URL => 'https://api.diversity.io/components/test_3/*/files/diversity.json'
       )
     );
 
