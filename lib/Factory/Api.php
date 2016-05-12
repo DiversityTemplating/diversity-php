@@ -42,8 +42,7 @@ class Api extends Factory {
 
     $url = $this->api_url . 'components/'
       . $component . '/' . ($version === null ? '*' : $version) . '/';
-
-    $ch = $this->curl_if->init($url);
+    $ch = $this->curl_if->init($url . 'files/diversity.json');
     $this->curl_if->setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $spec_json = $this->curl_if->exec($ch);
 
