@@ -1,0 +1,9 @@
+{
+  "component": "test_12",
+  "version":   "1.0.0",
+  "settings": {
+    "simple": {
+      "component": "test_5"
+    }
+  }
+}

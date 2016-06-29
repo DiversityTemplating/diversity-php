@@ -1,0 +1,8 @@
+{
+  "name":     "test_10",
+  "version":  "1.0.0",
+  "template": "template.html",
+  "context": {
+    "fubar": {"type": "rendered"}
+  }
+}

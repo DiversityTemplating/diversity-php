@@ -1,14 +1,14 @@
 <?php
 
 use Diversity\Component;
-use Diversity\Factory;
+use Diversity\Factory\Local;
 use Diversity\Collection;
 
 class CollectionTest extends PHPUnit_Framework_TestCase {
   static private $factory;
 
   static public function setUpBeforeClass() {
-    self::$factory = new Factory(
+    self::$factory = new Local(
       array(
         'archive'       => FIXTURES . 'component_archive_3' . DS,
         'archive_url'   => 'http://foo.bar/',
@@ -59,7 +59,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testNeedsAngular() {
-    $factory = new Factory(
+    $factory = new Local(
       array('archive' => FIXTURES . 'component_archive_1' . DS, 'archive_url' => 'dummy')
     );
 
@@ -82,7 +82,7 @@ class CollectionTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testAngularBootstrap() {
-    $factory = new Factory(
+    $factory = new Local(
       array('archive' => FIXTURES . 'component_archive_1' . DS, 'archive_url' => 'dummy')
     );
     $collection = new Collection;

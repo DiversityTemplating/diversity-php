@@ -1,0 +1,9 @@
+{
+  "name":     "test_11",
+  "version":  "1.0.0",
+  "template": "template.html",
+  "angular":  "mymodule",
+  "context": {
+    "angularBootstrap": {"type": "rendered"}
+  }
+}

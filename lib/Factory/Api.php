@@ -11,7 +11,7 @@ use SAI\Curl;
  * Factory for getting Components out of a diversity-api server.
  */
 class Api extends Factory {
-  private $api_url, $curl_if;
+  private $api_url, $curl_if, $instances;
 
   /**
    * @param string $api_url URL to a diversity-api, for example "https://api.diversity.io/".
@@ -28,6 +28,8 @@ class Api extends Factory {
    * @return Diversity\Component
    */
   public function get($component, $version = null) {
+    if (isset($this->instances[$component])) return $this->instances[$component];
+
     if ($version[0] === '^') {
       // Caret ^ ranges - Allow changes that do not modify the left-most non-zero digit.
       $version_parts = explode('.', substr($version, 1)); // Split into parts
@@ -59,7 +61,7 @@ class Api extends Factory {
       $url = $this->api_url . 'components/' . $component . '/' . $spec->version . '/';
     }
 
-    return new Component(
+    return $this->instances[$component] = new Component(
       $this,
       array(
         'spec'     => $spec,
