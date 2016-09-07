@@ -164,6 +164,21 @@ class Component {
       }
     }
 
+    // Check for translations. This differs a bit from ds-erlang since there all translations
+    // are chucked into the root component, i.e. the theme. Here we render one component and
+    // don't support children so we let the component have it's own translations.
+    if (isset($this->spec->i18n) && isset($this->spec->i18n->$language)) {
+      $files = $this->spec->i18n->$language;
+      if (isset($files->view)) {
+        $data = $this->factory->getAsset($this, $files->view);
+        $template_data->l10n = array();
+        $template_data->l10n[] = array(
+          "component" => $this->spec->name,
+          "messages" => $data
+        );
+      }
+    }
+
     return $mustache->render($template_html, $template_data);
   }
 }
