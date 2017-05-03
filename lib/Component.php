@@ -34,6 +34,11 @@ class Component {
     }
   }
 
+  /**
+   * Get all the dependencies of a component, and their dependencies, in an ordered array.
+   * Duplicates may occur when two different dependencies in
+   * turn depends on the same component.
+   */
   public function getDependencies() {
     $dependencies = array();
 
@@ -42,7 +47,7 @@ class Component {
     foreach ($this->spec->dependencies as $name => $spec) {
       // Assume $spec is a version.
       $component = $this->factory->get($name, $spec);
-      $dependencies[$name] = $component;
+      $dependencies[] = $component;
 
       // Add the dependent components dependencies.
       $dependencies = array_merge($dependencies, $component->getDependencies());

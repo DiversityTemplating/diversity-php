@@ -59,15 +59,32 @@ class Collection {
     return $tags;
   }
 
+  /**
+   * Return an ordered array of all components. Dependencies up front before their dependees.
+   */
   public function getAllComponents() {
     $all_components = array();
 
     foreach ($this->components as $component) {
-      $all_components = array_merge($all_components, $component->getDependencies());
       $all_components[$component->name] = $component;
+      $all_components = array_merge($all_components, $component->getDependencies());
     }
 
-    return $all_components;
+    // First we reverse the list to get the correct dependency oredering, i.e. deps upfront
+    $all_components = array_reverse($all_components);
+
+    // Then we need to remove duplicate components, while keeping order.
+    $lookup = array();
+    $filtered = array();
+
+    foreach ($all_components as $component) {
+      if (!isset($lookup[$component->name])) {
+        $lookup[$component->name] = true;
+        $filtered[] = $component;
+      }
+    }
+
+    return $filtered;
   }
 
   public function needsAngular() {
