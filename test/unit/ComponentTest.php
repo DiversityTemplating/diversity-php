@@ -19,7 +19,7 @@ class ComponentTest extends PHPUnit_Framework_TestCase {
     $component = self::$factory->get('test_3');
     $dependencies = $component->getDependencies();
 
-    $this->assertEquals('test_1', $dependencies['test_1']->name);
+    $this->assertEquals('test_1', $dependencies[0]->name);
   }
 
   public function testGetStyles() {
